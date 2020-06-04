@@ -11,14 +11,20 @@ const MongoStore = require('connect-mongo')(session);
 const app = express();
 const port = process.env.PORT || 4000;
 
-// ====== CONTROLLERS
+// ====== CONTROLLERS & ROUTES
+// index.js --> routes --> controllers
+const routes = require('./routes');
 
-// temp database connection
-const db = require('./models')
+// // temp database connection
+// const db = require('./models')
 
 // ====== MIDDLEWARE
+app.use(express.json());
 
 // ====== ROUTES
+// Auth Routes
+app.use('/api/v1/auth', routes.authRoutes);
+
 app.get('/', (req, res) => {
   res.send('Hello, world');
 })
