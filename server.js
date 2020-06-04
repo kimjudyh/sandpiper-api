@@ -13,6 +13,9 @@ const port = process.env.PORT || 4000;
 
 // ====== CONTROLLERS
 
+// temp database connection
+const db = require('./models')
+
 // ====== MIDDLEWARE
 
 // ====== ROUTES
