@@ -82,8 +82,8 @@ const login = async (req, res) => {
       })
     }
     // if passwords match, create new session
-    req.session.currentUser = foundUser._id;
     // attach currentUser property to cookie
+    req.session.currentUser = foundUser._id;
 
     return res.status(200).json({
       status: 200,
@@ -99,11 +99,41 @@ const login = async (req, res) => {
 
 // Verify - GET - see if user is logged in or not
 const verify = async (req, res) => {
-
+  if (!req.session.currentUser) {
+    return res.status(401).json({
+      status: 401,
+      message: "Unauthorized"
+    })
+  } else {
+    res.status(200).json({
+      status: 200,
+      message: `Current user verified with ID ${req.session.currentUser}`
+    });
+  }
 }
 
 // Logout - DELETE - delete express session
 const logout = async (req, res) => {
+  try {
+    // check if a user is logged in
+    if (!req.session.currentUser) {
+      return res.status(401).json({
+        status: 401,
+        message: "Session not active."
+      })
+    } else {
+      await req.session.destroy();
+      res.status(200).json({
+        status: 200,
+        message: "Logged Out"
+      })
+    }
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      message: err
+    })
+  }
 
 }
 
