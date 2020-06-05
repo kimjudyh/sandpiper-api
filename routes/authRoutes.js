@@ -8,6 +8,8 @@ const authController = require('../controllers/authController');
 // path = /api/v1/auth
 router.get('/register', authController.get_register);
 router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.delete('/logout', authController.logout);
 
 // ==== EXPORT
 module.exports = router;
