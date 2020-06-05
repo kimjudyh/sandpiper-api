@@ -9,6 +9,8 @@ const birdingSessionController = require('../controllers/birdingSessionControlle
 router.get('/', birdingSessionController.getAllBirdingSessions);
 // create new session
 router.post('/new', birdingSessionController.createBirdingSession);
+// get one birding session
+router.get('/:id', birdingSessionController.getOneBirdingSession);
 
 // ==== EXPORT
 module.exports = router;
