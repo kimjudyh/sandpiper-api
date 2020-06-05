@@ -17,6 +17,7 @@ const routes = require('./routes');
 
 // ====== MIDDLEWARE
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 // set up sessions with MongoStore
 const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/final-project';
 app.use(session({
