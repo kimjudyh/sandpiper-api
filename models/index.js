@@ -23,4 +23,8 @@ mongoose.connect(connectionString, configOptions)
 // ====== EXPORTS
 module.exports= {
   User: require('./User'),
+  BirdingSession: require('./BirdingSession'),
+  // Bird: require('./Bird'),
+  // Photo: require('./Photo'),
+  // Behavior: require('./Behavior'),
 }

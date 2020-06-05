@@ -26,12 +26,23 @@ app.use(session({
   // store session in mongoDB
   store: new MongoStore(
     { url: connectionString }
-  )
+  ),
+  cookie: {
+    maxAge: 1000 * 3600 * 24 * 4, // 4 day long session
+  }
 }));
 
 // ====== ROUTES
 // Auth Routes
 app.use('/api/v1/auth', routes.authRoutes);
+// Session (for birdwatching) Routes
+app.use('/api/v1/birdingSession', routes.birdingSessionRoutes);
+// Bird Routes
+// app.use('/api/v1/bird', routes.birdRoutes);
+// Photo Routes
+// app.use('/api/v1/photo', routes.photoRoutes);
+// Behavior Routes
+// app.use('/api/v1/behavior', routes.behaviorRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, world');
