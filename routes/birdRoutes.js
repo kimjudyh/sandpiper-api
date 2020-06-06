@@ -14,6 +14,7 @@ router.get('/:birdingSessionId/bird/:id', birdController.getOneBird);
 // update a bird
 router.put('/:birdingSessionId/bird/:id', birdController.updateBird);
 // delete a bird
+router.delete('/:birdingSessionId/bird/:id', birdController.deleteBird);
 
 // ==== EXPORT
 module.exports = router;

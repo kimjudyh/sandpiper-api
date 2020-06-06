@@ -136,11 +136,58 @@ const updateBird = async (req, res) => {
   }
 }
 
+// Delete a bird
+const deleteBird = async (req, res) => {
+  try {
+    // TODO: user authorization
+    // find bird by id and delete from Bird db
+    const deletedBird = await db.Bird.findByIdAndDelete(req.params.id);
+    // if deletedBird is null, return an error
+    if (!deletedBird) {
+      return res.status(400).json({
+        status: 400,
+        message: "Something went wrong deleting a bird"
+      })
+    }
+    // delete bird from associated birding session
+    const foundBirdingSession = await db.BirdingSession.findById(req.params.birdingSessionId);
+    // if foundBirdingSession is null, return an error
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: "Something went wrong finding birding session"
+      })
+    }
+    // remove bird from birds array in birding session
+    foundBirdingSession.birds.pull({ _id: req.params.id });
+    const savedBirdingSession = await foundBirdingSession.save();
+    // if savedBirdingSession is null, return an error
+    if (!savedBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: "Somthing went wrong saving birding session"
+      })
+    }
+    // else, return data as JSON
+    res.status(200).json({
+      status: 200,
+      deletedBird
+    })
+
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      err,
+      message: "Something went wrong deleting a bird"
+    })
+  }
+}
+
 // ==== EXPORTS
 module.exports = {
   getBirdingSessionBirds,
   createBird,
   getOneBird,
   updateBird,
-  // deleteBird,
+  deleteBird,
 }
