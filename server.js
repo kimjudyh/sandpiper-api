@@ -39,7 +39,7 @@ app.use('/api/v1/auth', routes.authRoutes);
 // Session (for birdwatching) Routes
 app.use('/api/v1/birdingSession', routes.birdingSessionRoutes);
 // Bird Routes
-// app.use('/api/v1/bird', routes.birdRoutes);
+app.use('/api/v1/bird', routes.birdRoutes);
 // Photo Routes
 // app.use('/api/v1/photo', routes.photoRoutes);
 // Behavior Routes
