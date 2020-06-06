@@ -43,7 +43,7 @@ app.use('/api/v1/bird', routes.birdRoutes);
 // Photo Routes
 // app.use('/api/v1/photo', routes.photoRoutes);
 // Behavior Routes
-// app.use('/api/v1/behavior', routes.behaviorRoutes);
+app.use('/api/v1/behavior', routes.behaviorRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, world');

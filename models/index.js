@@ -26,5 +26,5 @@ module.exports= {
   BirdingSession: require('./BirdingSession'),
   Bird: require('./Bird'),
   // Photo: require('./Photo'),
-  // Behavior: require('./Behavior'),
+  Behavior: require('./Behavior'),
 }
