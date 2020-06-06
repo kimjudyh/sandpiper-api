@@ -4,7 +4,9 @@
 const db = require('../models');
 
 // ==== ROUTES
+// Get all birding sessions
 const getAllBirdingSessions = async (req, res) => {
+  // TODO: user authorization: show only sessions that contain user's id
   try {
     // get array of all sessions from db
     const allBirdingSessions = await db.BirdingSession.find();
@@ -23,6 +25,7 @@ const getAllBirdingSessions = async (req, res) => {
   }
 }
 
+// Create a birding session
 const createBirdingSession = async (req, res) => {
   try {
     // check that user is logged in
@@ -56,10 +59,13 @@ const createBirdingSession = async (req, res) => {
   }
 }
 
+// Get one birding session by ID
 const getOneBirdingSession = async (req, res) => {
+  // TODO: user authorization
   try {
-    // find birding session in db by id
-    const foundBirdingSession = await db.BirdingSession.findById(req.params.id);
+    // find by birding session id AND user id
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {_id: req.params.id, users: req.session.currentUser});
     console.log('birding session', foundBirdingSession)
     // if doesn't exist, return error
     if (!foundBirdingSession) {
@@ -77,6 +83,70 @@ const getOneBirdingSession = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: 500,
+      err,
+      message: 'Something went wrong trying to get birding session'
+    })
+  }
+}
+
+// Update a birding session
+const updateBirdingSession = async (req, res) => {
+  try {
+    // TODO: user authorization
+    // get birding session by id, update in db
+    const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {new: true}
+      )
+    // if no birding session found, return error
+    if (!updatedBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding session id ${req.params.id} not found`
+      })
+    }
+    // else return as JSON
+    res.status(200).json({
+      status: 200,
+      message: "on update page",
+      updatedBirdingSession
+    })
+
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      message: err
+    })
+
+  }
+}
+
+const deleteBirdingSession = async (req, res) => {
+  try {
+    // TODO: user authorization
+    // TODO: check that user can delete this session
+    // find by id and delete from database
+    const deletedBirdingSession = await db.BirdingSession.findByIdAndDelete(req.params.id);
+    // if birding session not found, return error
+    if (!deletedBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding session id ${req.params.id} not found`
+      })
+    }
+    // TODO: delete birds associated with session from db
+    // return confirmation of deletion
+    res.status(200).json({
+      status: 200,
+      message: "Session deleted",
+      deletedBirdingSession
+    })
+    
+
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
       message: err
     })
   }
@@ -87,4 +157,6 @@ module.exports = {
   getAllBirdingSessions,
   createBirdingSession,
   getOneBirdingSession,
+  updateBirdingSession,
+  deleteBirdingSession
 }

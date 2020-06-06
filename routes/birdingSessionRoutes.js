@@ -11,6 +11,10 @@ router.get('/', birdingSessionController.getAllBirdingSessions);
 router.post('/new', birdingSessionController.createBirdingSession);
 // get one birding session
 router.get('/:id', birdingSessionController.getOneBirdingSession);
+// update birding session
+router.put('/:id', birdingSessionController.updateBirdingSession);
+// delete birding session
+router.delete('/:id', birdingSessionController.deleteBirdingSession);
 
 // ==== EXPORT
 module.exports = router;
