@@ -1,0 +1,92 @@
+{
+  "behaviors": [
+    {
+      "name": "Flyover",
+      "code": "F"
+    },
+    {
+      "name": "In Appropriate Habitat",
+      "code": "H"
+    },
+    {
+      "name": "Singing Bird",
+      "code": "S"
+    },
+    {
+      "name": "Singing Male Present 7+ Days",
+      "code": "S7"
+    },
+    {
+      "name": "Multiple (7+) Singing Males",
+      "code": "M"
+    },
+    {
+      "name": "Pair in Suitable Habitat",
+      "code": "P"
+    },
+    {
+      "name": "Territorial Defense",
+      "code": "T"
+    },
+    {
+      "name": "Courtship, Display, or Copulation",
+      "code": "C"
+    },
+    {
+      "name": "Visiting Probable Nest Site",
+      "code": "N"
+    },
+    {
+      "name": "Agitated Behavior",
+      "code": "A"
+    },
+    {
+      "name": "Woodpecker/Wren Nest Building",
+      "code": "B"
+    },
+    {
+      "name": "Physiological Evidence",
+      "code": "PE"
+    },
+    {
+      "name": "Carrying Nesting Material",
+      "code": "CN"
+    },
+    {
+      "name": "Nest Building",
+      "code": "NB"
+    },
+    {
+      "name": "Distraction Display",
+      "code": "DD"
+    },
+    {
+      "name": "Used Nest",
+      "code": "UN"
+    },
+    {
+      "name": "Occupied Nest",
+      "code": "ON"
+    },
+    {
+      "name": "Recently Fledged & Precocial Young",
+      "code": "FL"
+    },
+    {
+      "name": "Carrying Food",
+      "code": "CF"
+    },
+    {
+      "name": "Feeding Young",
+      "code": "FY"
+    },
+    {
+      "name": "Nest with Eggs",
+      "code": "NE"
+    },
+    {
+      "name": "Nest with Young",
+      "code": "NY"
+    }
+  ]
+}
