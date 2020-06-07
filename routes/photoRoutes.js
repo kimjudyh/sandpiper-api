@@ -12,7 +12,7 @@ router.get('/', photoController.getAllPhotos);
 // get all photos of a bird in a birding session
 router.get('/:birdingSessionId/bird/:birdId', photoController.getBirdFromBirdingSessionPhotos);
 // create photo associated with a specific bird
-router.post('/:birdId', photoController.createPhoto);
+router.post('/:birdingSessionId/bird/:birdId', photoController.createPhoto);
 // get single photo
 router.get('/:id', photoController.getOnePhoto);
 // update photo
