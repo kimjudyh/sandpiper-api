@@ -152,11 +152,51 @@ const deleteBirdingSession = async (req, res) => {
   }
 }
 
+const shareBirdingSession = async (req, res) => {
+  try {
+    // look up users by email in db to see if they're registered
+    // if yes, add them to birding session
+    // req.body.email - multiple email fields?
+    if (req.body.email) {
+      const foundUser = await db.User.findOne({ email: req.body.email });
+      if (!foundUser) {
+        // user not registered
+        return res.json({
+          message: "User not registered"
+        })
+      }
+      // add to birding session users array, provided via url req.params.id
+      const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
+        req.params.id,
+        {$push: {users: foundUser._id}},
+        { new: true }
+      )
+      return res.status(200).json({
+        status: 200,
+        message: "User added to birding session",
+        updatedBirdingSession
+      })
+    } else {
+      return res.status(400).json({
+        status: 400,
+        message: "No user to add"
+      })
+    }
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      err,
+      message: "Something went wrong adding a user to the birding session"
+    })
+  }
+}
+
 // ==== EXPORT
 module.exports = {
   getAllBirdingSessions,
   createBirdingSession,
   getOneBirdingSession,
   updateBirdingSession,
-  deleteBirdingSession
+  deleteBirdingSession,
+  shareBirdingSession,
 }
