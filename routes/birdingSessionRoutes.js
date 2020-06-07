@@ -17,7 +17,7 @@ router.put('/:id', birdingSessionController.updateBirdingSession);
 router.delete('/:id', birdingSessionController.deleteBirdingSession);
 // add collaborators to birding session
 router.put('/share/:id', birdingSessionController.shareBirdingSession);
-// TODO: remove collaborators from birding session
+// remove collaborators from birding session
 router.put('/unshare/:id', birdingSessionController.unshareBirdingSession);
 
 // ==== EXPORT
