@@ -165,6 +165,17 @@ const shareBirdingSession = async (req, res) => {
           message: "User not registered"
         })
       }
+      // if user is already a collaborator on birding session, return error
+      const userAlreadyExists = await db.BirdingSession.findOne(
+        {_id: req.params.id, users: foundUser._id}
+      )
+      if (userAlreadyExists) {
+        return res.status(400).json({
+          status: 400,
+          message: "User is already a collaborator on this birding session",
+          userAlreadyExists
+        })
+      }
       // add to birding session users array, provided via url req.params.id
       const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
         req.params.id,
@@ -191,6 +202,31 @@ const shareBirdingSession = async (req, res) => {
   }
 }
 
+const unshareBirdingSession = async (req, res) => {
+  try {
+    // look up user by email to get user id
+    const foundUser = await db.User.findOne({email: req.body.email});
+    // find birding session to update
+    const foundBirdingSession = await db.BirdingSession.findByIdAndUpdate(
+      {_id: req.params.id},
+      {$pull: {users: foundUser._id}},
+      {new: true}
+    )
+    res.status(200).json({
+      status: 200,
+      message: `Removed user ${req.body.email} from birding session`,
+      foundBirdingSession
+    })
+    
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      err,
+      message: "Something went wrong removing a user from the birding session"
+    })
+  }
+}
+
 // ==== EXPORT
 module.exports = {
   getAllBirdingSessions,
@@ -199,4 +235,5 @@ module.exports = {
   updateBirdingSession,
   deleteBirdingSession,
   shareBirdingSession,
+  unshareBirdingSession,
 }
