@@ -19,9 +19,9 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
-  sessions : [{
+  birdingSessions : [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Session',
+    ref: 'BirdSession',
   }]
 }, { timestamps: true });
 
