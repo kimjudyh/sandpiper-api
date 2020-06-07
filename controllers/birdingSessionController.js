@@ -6,10 +6,16 @@ const db = require('../models');
 // ==== ROUTES
 // Get all birding sessions
 const getAllBirdingSessions = async (req, res) => {
-  // TODO: user authorization: show only sessions that contain user's id
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
-    // get array of all sessions from db
-    const allBirdingSessions = await db.BirdingSession.find();
+    // get array of all sessions from db that user is part of
+    const allBirdingSessions = await db.BirdingSession.find({users: req.session.currentUser});
     // return all sessions as JSON
     res.status(200).json({
       status: 200,
@@ -27,14 +33,14 @@ const getAllBirdingSessions = async (req, res) => {
 
 // Create a birding session
 const createBirdingSession = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
-    // check that user is logged in
-    if (!req.session.currentUser) {
-      return res.status(400).json({
-        status: 400,
-        message: "User not logged in"
-      })
-    } 
     // use req.body to create a new session object in db
     const newBirdingSessionData = {
       ... req.body,
@@ -44,6 +50,10 @@ const createBirdingSession = async (req, res) => {
     console.log(newBirdingSessionData);
     // save to db
     const newBirdingSession = await db.BirdingSession.create(newBirdingSessionData);
+    // push birding session id to User's birding session array
+    const foundUser = await db.User.findById(req.session.currentUser);
+    foundUser.birdingSessions.push(newBirdingSession._id);
+    const savedUser = await foundUser.save();
     // return JSON confirmation message
     res.status(200).json({
       status: 200,
@@ -61,7 +71,13 @@ const createBirdingSession = async (req, res) => {
 
 // Get one birding session by ID
 const getOneBirdingSession = async (req, res) => {
-  // TODO: user authorization
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // find by birding session id AND user id
     const foundBirdingSession = await db.BirdingSession.findOne(
@@ -91,11 +107,18 @@ const getOneBirdingSession = async (req, res) => {
 
 // Update a birding session
 const updateBirdingSession = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
-    // TODO: user authorization
     // get birding session by id, update in db
     const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
-      req.params.id,
+      // make sure user has permission to update
+      {_id: req.params.id, users: req.session.currentUser},
       req.body,
       {new: true}
       )
@@ -103,7 +126,7 @@ const updateBirdingSession = async (req, res) => {
     if (!updatedBirdingSession) {
       return res.status(400).json({
         status: 400,
-        message: `Birding session id ${req.params.id} not found`
+        message: `Birding session id ${req.params.id} not found or user doesn't have permission to update`
       })
     }
     // else return as JSON
@@ -118,29 +141,46 @@ const updateBirdingSession = async (req, res) => {
       status: 500,
       message: err
     })
-
   }
 }
 
+// Delete a birding session
 const deleteBirdingSession = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
-    // TODO: user authorization
-    // TODO: check that user can delete this session
+    // check that user can delete this session
     // find by id and delete from database
-    const deletedBirdingSession = await db.BirdingSession.findByIdAndDelete(req.params.id);
+    const deletedBirdingSession = await db.BirdingSession.findOneAndDelete(
+      {_id: req.params.id, users: req.session.currentUser}
+    )
     // if birding session not found, return error
     if (!deletedBirdingSession) {
       return res.status(400).json({
         status: 400,
-        message: `Birding session id ${req.params.id} not found`
+        message: `Birding session id ${req.params.id} not found, or user doesn't have permission to delete`
       })
     }
-    // TODO: delete birds associated with session from db
+    // delete birds associated with session from db
+    const deletedBirds = await db.Bird.deleteMany({birdingSession: req.params.id})
+    // delete birding session id from User's birding sessions array
+    const foundUser = await db.User.findByIdAndUpdate(
+      {_id: req.session.currentUser}, 
+      {$pull: {birdingSessions: req.params.id}},
+      {new: true}
+    )
     // return confirmation of deletion
     res.status(200).json({
       status: 200,
       message: "Session deleted",
-      deletedBirdingSession
+      deletedBirdingSession,
+      deletedBirds,
+      foundUser
     })
     
 
@@ -152,47 +192,56 @@ const deleteBirdingSession = async (req, res) => {
   }
 }
 
+// Add a user to collaborate on birding session
 const shareBirdingSession = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
-    // look up users by email in db to see if they're registered
-    // if yes, add them to birding session
     // req.body.email - multiple email fields?
-    if (req.body.email) {
-      const foundUser = await db.User.findOne({ email: req.body.email });
-      if (!foundUser) {
-        // user not registered
-        return res.json({
-          message: "User not registered"
-        })
-      }
-      // if user is already a collaborator on birding session, return error
-      const userAlreadyExists = await db.BirdingSession.findOne(
-        {_id: req.params.id, users: foundUser._id}
-      )
-      if (userAlreadyExists) {
-        return res.status(400).json({
-          status: 400,
-          message: "User is already a collaborator on this birding session",
-          userAlreadyExists
-        })
-      }
-      // add to birding session users array, provided via url req.params.id
-      const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
-        req.params.id,
-        {$push: {users: foundUser._id}},
-        { new: true }
-      )
-      return res.status(200).json({
-        status: 200,
-        message: "User added to birding session",
-        updatedBirdingSession
-      })
-    } else {
+    // if email field empty
+    if (!req.body.email) {
       return res.status(400).json({
         status: 400,
         message: "No user to add"
       })
     }
+    // look up user by email in db
+    const foundUser = await db.User.findOne({ email: req.body.email });
+    // if no found user, user is not registered
+    if (!foundUser) {
+      return res.json({
+        message: "User not registered"
+      })
+    }
+    // if user is already a collaborator on birding session, return error
+    const userAlreadyExists = await db.BirdingSession.findOne(
+      { _id: req.params.id, users: foundUser._id }
+    )
+    if (userAlreadyExists) {
+      return res.status(400).json({
+        status: 400,
+        message: "User is already a collaborator on this birding session",
+        userAlreadyExists
+      })
+    }
+    // add to birding session users array, provided via url req.params.id
+    const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
+      req.params.id,
+      { $push: { users: foundUser._id } },
+      { new: true }
+    )
+    // return data as JSON
+    return res.status(200).json({
+      status: 200,
+      message: "User added to birding session",
+      updatedBirdingSession
+    })
+
   } catch (err) {
     return res.status(500).json({
       status: 500,
@@ -202,16 +251,39 @@ const shareBirdingSession = async (req, res) => {
   }
 }
 
+// Remove a user from birding session
 const unshareBirdingSession = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // look up user by email to get user id
     const foundUser = await db.User.findOne({email: req.body.email});
-    // find birding session to update
+    // if no found user, return error
+    if (!foundUser) {
+      return res.status(400).json({
+        status: 400,
+        message: "User not found"
+      })
+    }
+    // find birding session to update and remove user from users array
     const foundBirdingSession = await db.BirdingSession.findByIdAndUpdate(
       {_id: req.params.id},
       {$pull: {users: foundUser._id}},
       {new: true}
     )
+    // if no found birding session, return error
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: "No birding session found"
+      })
+    }
+    // return data as JSON
     res.status(200).json({
       status: 200,
       message: `Removed user ${req.body.email} from birding session`,
