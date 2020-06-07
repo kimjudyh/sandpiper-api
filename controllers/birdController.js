@@ -5,7 +5,13 @@ const db = require('../models');
 
 // ==== ROUTES
 const getBirdingSessionBirds = async (req, res) => {
-  // TODO: user authorization
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // find all birds within a given birding session, whose id is provided by the URL through birdingSessionId
     const allBirds = await db.BirdingSession.findById(req.params.birdingSessionId)
@@ -35,6 +41,13 @@ const getBirdingSessionBirds = async (req, res) => {
 // Create new bird in specified birding session
 const createBird = async (req, res) => {
   // TODO: user authorization
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // create a bird associated with birding session, whose id is provided by req.params.birdingSessionId
     const newBird = await db.Bird.create({
@@ -79,6 +92,13 @@ const createBird = async (req, res) => {
 // Get one bird
 const getOneBird = async (req, res) => {
   // TODO: user authorization
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // find bird by id, provided by URL as req.params.id
     const foundBird = await db.Bird.findById(req.params.id);
@@ -107,6 +127,13 @@ const getOneBird = async (req, res) => {
 // Update a bird
 const updateBird = async (req, res) => {
   // TODO: user authorization
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // find bird by id and update it using req.body
     const updatedBird = await db.Bird.findByIdAndUpdate(
@@ -138,6 +165,13 @@ const updateBird = async (req, res) => {
 
 // Delete a bird
 const deleteBird = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     // TODO: user authorization
     // find bird by id and delete from Bird db
