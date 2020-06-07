@@ -88,12 +88,30 @@ const createPhoto = async (req, res) => {
   }
 }
 
+const getOnePhoto = async (req, res) => {
+  try {
+    const foundPhoto = await db.Photo.findById(req.params.id);
+    res.status(200).json({
+      status: 200,
+      foundPhoto
+    })
+
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      err,
+      message: "Something went wrong getting a photo"
+    })
+  }
+  // get photo by id
+}
+
 // ==== EXPORT
 module.exports = {
   getAllPhotos,
   getBirdFromBirdingSessionPhotos,
   createPhoto,
-  // getOnePhoto,
+  getOnePhoto,
   // updatePhoto,
   // deletePhoto, 
 }
