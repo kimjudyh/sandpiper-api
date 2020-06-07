@@ -14,17 +14,25 @@ const db = require('../models');
 const getAllPhotos = async (req, res) => {
   try {
     console.log(req.session.currentUser);
+    // find user in db
+    const foundUser = await db.User.findById(req.session.currentUser);
+    console.log(foundUser.birdingSessions)
+    // use array of birding session IDs
+    const foundPhotos = await db.Photo.find(
+      {birdingSession: {$in: foundUser.birdingSessions}}
+    )
     // get all sessions
-    const allSessions = await db.BirdingSession.find({users: req.session.currentUser})
-    .populate('birds', 'photos')
-    .populate('photos')
+    // const allSessions = await db.BirdingSession.find({users: req.session.currentUser})
+    // .populate('birds', 'photos')
+    // .populate('photos')
 
-    const allPhotos = await db.Photo.find({user: req.session.currentUser})
+    // const allPhotos = await db.Photo.find({user: req.session.currentUser})
 
     // temp, return all sessions
     res.json({
-      allSessions,
-      allPhotos
+      // allSessions,
+      // allPhotos
+      foundPhotos
     })
 
     // get all photos?
@@ -66,6 +74,7 @@ const createPhoto = async (req, res) => {
     const photoData = {
       ...req.body,
       bird: req.params.birdId,
+      birdingSession: req.params.birdingSessionId,
       user: req.session.currentUser
     }
     const newPhoto = await db.Photo.create(photoData);
