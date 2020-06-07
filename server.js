@@ -12,7 +12,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // ====== CONTROLLERS & ROUTES
-// index.js --> routes --> controllers
+// /routes/index.js --> routes --> controllers
 const routes = require('./routes');
 
 // ====== MIDDLEWARE
@@ -36,7 +36,7 @@ app.use(session({
 // ====== ROUTES
 // Auth Routes
 app.use('/api/v1/auth', routes.authRoutes);
-// Session (for birdwatching) Routes
+// BirdingSession (for birdwatching) Routes
 app.use('/api/v1/birdingSession', routes.birdingSessionRoutes);
 // Bird Routes
 app.use('/api/v1/bird', routes.birdRoutes);

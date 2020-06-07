@@ -23,6 +23,10 @@ const PhotoSchema = new mongoose.Schema({
   bird: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Bird'
+  },
+  birdingSession: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BirdingSession'
   }
 })
 
