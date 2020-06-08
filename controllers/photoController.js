@@ -10,32 +10,38 @@ cloudinary.config({
 const db = require('../models');
 
 // ==== ROUTES
-// Get all photos
+// Get all photos that user has permission to view,
+// including photos shared in birding sessions by other users
+// GET '/'
 const getAllPhotos = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     console.log(req.session.currentUser);
     // find user in db
-    const foundUser = await db.User.findById(req.session.currentUser);
-    console.log(foundUser.birdingSessions)
+    // const foundUser = await db.User.findById(req.session.currentUser);
+    // find birding sessions that contain user id
+    const foundBirdingSessions = await db.BirdingSession.find(
+      {users: req.session.currentUser}
+    )
+    // return as an array of _ids
+      .distinct('_id');
+    console.log('found b sessions:', foundBirdingSessions)
     // use array of birding session IDs
     const foundPhotos = await db.Photo.find(
-      {birdingSession: {$in: foundUser.birdingSessions}}
+      {birdingSession: {$in: foundBirdingSessions}}
     )
-    // get all sessions
-    // const allSessions = await db.BirdingSession.find({users: req.session.currentUser})
-    // .populate('birds', 'photos')
-    // .populate('photos')
-
-    // const allPhotos = await db.Photo.find({user: req.session.currentUser})
-
-    // temp, return all sessions
-    res.json({
-      // allSessions,
-      // allPhotos
+    // return found photos as JSON
+    res.status(200).json({
+      status: 200,
+      foundBirdingSessions,
       foundPhotos
     })
-
-    // get all photos?
 
   } catch (err) {
     return res.status(500).json({
@@ -46,18 +52,32 @@ const getAllPhotos = async (req, res) => {
   }
 }
 
+// Get photos of one bird from a birding session
+// GET '/:birdingSessionId/bird/:birdId
 const getBirdFromBirdingSessionPhotos = async (req, res) => {
-  try {
-    // look in bird db by birding session id, bird id
-    const foundBird = await db.Bird.findOne({
-      birdingSession: req.params.birdingSessionId,
-      _id: req.params.birdId
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
     })
-      .populate('photos')
-
-    res.json({
-      foundBird,
-      photos: foundBird.photos
+  } 
+  try {
+    // find photos in db that have birding session id AND bird id
+    const foundPhotos = await db.Photo.find(
+      {bird: req.params.birdId, birdingSession: req.params.birdingSessionId}
+    )
+    // look in bird db by birding session id, bird id
+    // const foundBird = await db.Bird.findOne({
+    //   birdingSession: req.params.birdingSessionId,
+    //   _id: req.params.birdId
+    // })
+    //   .populate('photos')
+    // send data as JSON
+    res.status(200).json({
+      status: 200,
+      foundPhotos
+      // photos: foundBird.photos
     })
 
   } catch (err) {
@@ -69,7 +89,15 @@ const getBirdFromBirdingSessionPhotos = async (req, res) => {
   }
 }
 
+// 
 const createPhoto = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     const photoData = {
       ...req.body,
@@ -98,6 +126,13 @@ const createPhoto = async (req, res) => {
 }
 
 const getOnePhoto = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
   try {
     const foundPhoto = await db.Photo.findById(req.params.id);
     res.status(200).json({

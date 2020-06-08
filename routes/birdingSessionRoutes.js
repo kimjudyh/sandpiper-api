@@ -8,7 +8,7 @@ const birdingSessionController = require('../controllers/birdingSessionControlle
 // index route - get all sessions
 router.get('/', birdingSessionController.getAllBirdingSessions);
 // create new session
-router.post('/new', birdingSessionController.createBirdingSession);
+router.post('/', birdingSessionController.createBirdingSession);
 // get one birding session
 router.get('/:id', birdingSessionController.getOneBirdingSession);
 // update birding session

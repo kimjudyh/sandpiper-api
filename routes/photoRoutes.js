@@ -16,7 +16,9 @@ router.post('/:birdingSessionId/bird/:birdId', photoController.createPhoto);
 // get single photo
 router.get('/:id', photoController.getOnePhoto);
 // update photo
+// router.put('/:id', photoController.updatePhoto);
 // delete photo
+// router.delete('/:id', photoController.deletePhoto);
 
 // ==== EXPORT
 module.exports = router;

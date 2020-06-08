@@ -5,6 +5,7 @@ const db = require('../models');
 
 // ==== ROUTES
 // Get all birding sessions
+// GET '/'
 const getAllBirdingSessions = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -32,6 +33,7 @@ const getAllBirdingSessions = async (req, res) => {
 }
 
 // Create a birding session
+// POST '/'
 const createBirdingSession = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -50,10 +52,11 @@ const createBirdingSession = async (req, res) => {
     console.log(newBirdingSessionData);
     // save to db
     const newBirdingSession = await db.BirdingSession.create(newBirdingSessionData);
+    // remove?
     // push birding session id to User's birding session array
-    const foundUser = await db.User.findById(req.session.currentUser);
-    foundUser.birdingSessions.push(newBirdingSession._id);
-    const savedUser = await foundUser.save();
+    // const foundUser = await db.User.findById(req.session.currentUser);
+    // foundUser.birdingSessions.push(newBirdingSession._id);
+    // const savedUser = await foundUser.save();
     // return JSON confirmation message
     res.status(200).json({
       status: 200,
@@ -70,6 +73,7 @@ const createBirdingSession = async (req, res) => {
 }
 
 // Get one birding session by ID
+// GET '/:id'
 const getOneBirdingSession = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -106,6 +110,7 @@ const getOneBirdingSession = async (req, res) => {
 }
 
 // Update a birding session
+// PUT '/:id'
 const updateBirdingSession = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -116,7 +121,7 @@ const updateBirdingSession = async (req, res) => {
   } 
   try {
     // get birding session by id, update in db
-    const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
+    const updatedBirdingSession = await db.BirdingSession.findOneAndUpdate(
       // make sure user has permission to update
       {_id: req.params.id, users: req.session.currentUser},
       req.body,
@@ -145,6 +150,7 @@ const updateBirdingSession = async (req, res) => {
 }
 
 // Delete a birding session
+// DELETE '/:id'
 const deleteBirdingSession = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -168,19 +174,20 @@ const deleteBirdingSession = async (req, res) => {
     }
     // delete birds associated with session from db
     const deletedBirds = await db.Bird.deleteMany({birdingSession: req.params.id})
+    // remove?
     // delete birding session id from User's birding sessions array
-    const foundUser = await db.User.findByIdAndUpdate(
-      {_id: req.session.currentUser}, 
-      {$pull: {birdingSessions: req.params.id}},
-      {new: true}
-    )
+    // const foundUser = await db.User.findByIdAndUpdate(
+      // {_id: req.session.currentUser}, 
+      // {$pull: {birdingSessions: req.params.id}},
+      // {new: true}
+    // )
     // return confirmation of deletion
     res.status(200).json({
       status: 200,
       message: "Session deleted",
       deletedBirdingSession,
       deletedBirds,
-      foundUser
+      // foundUser
     })
     
 
@@ -193,6 +200,7 @@ const deleteBirdingSession = async (req, res) => {
 }
 
 // Add a user to collaborate on birding session
+// PUT '/share/:id'
 const shareBirdingSession = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -252,6 +260,7 @@ const shareBirdingSession = async (req, res) => {
 }
 
 // Remove a user from birding session
+// PUT '/unshare/:id'
 const unshareBirdingSession = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
