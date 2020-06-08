@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const session = require('express-session');
+const cors = require('cors');
 require('dotenv').config();
 
 // store sessions in mongoDB
@@ -16,6 +17,14 @@ const port = process.env.PORT || 4000;
 const routes = require('./routes');
 
 // ====== MIDDLEWARE
+// CORS
+const corsOptions = {
+  origin: ['http://localhost:4000'],
+  credentials: true, // allows session cookie to be sent back and forth from server to client
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // set up sessions with MongoStore
