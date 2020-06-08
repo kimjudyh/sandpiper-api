@@ -12,9 +12,9 @@ const BirdSchema = new mongoose.Schema({
   },
   behavior: {
     // use populate('behavior', 'name')
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: 'Behavior'
-    type: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Behavior'
+    // type: String
   },
   unconfirmed: {
     type: Boolean,

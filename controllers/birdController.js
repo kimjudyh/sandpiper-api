@@ -138,7 +138,8 @@ const getOneBird = async (req, res) => {
       })
     }
     // find bird by id, provided by URL as req.params.id
-    const foundBird = await db.Bird.findById(req.params.id);
+    const foundBird = await db.Bird.findById(req.params.id)
+      .populate('behavior', 'name');
     // if foundBird is null, return an error
     if (!foundBird) {
       return res.status(400).json({
