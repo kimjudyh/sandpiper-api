@@ -13,8 +13,9 @@ const get_register = (req, res) => {
 // Register - POST - create new user
 const register = async (req, res) => {
   try {
+    console.log('In Register Route')
     // check if the user already exists
-    const existingUser = await db.User.findOne( { email: req.body. email });
+    const existingUser = await db.User.findOne( { email: req.body.email });
     if (existingUser) {
       return res.status(400).json({
         status: 400,
@@ -87,6 +88,7 @@ const login = async (req, res) => {
 
     return res.status(200).json({
       status: 200,
+      id: foundUser._id,
       message: "Logged in"
     })
   } catch (err) {
@@ -115,10 +117,12 @@ const verify = async (req, res) => {
 // Logout - DELETE - delete express session
 const logout = async (req, res) => {
   try {
+    console.log('in logout')
+    console.log('req.session', req.session)
     // check if a user is logged in
     if (!req.session.currentUser) {
-      return res.status(401).json({
-        status: 401,
+      return res.status(400).json({
+        status: 400,
         message: "Session not active."
       })
     } else {
