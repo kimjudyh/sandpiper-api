@@ -10,14 +10,14 @@ router.get('/birdingSession/:birdingSessionId', birdController.getBirdingSession
 // create new bird
 router.post('/birdingSession/:birdingSessionId', birdController.createBird);
 // get one bird
-// router.get('/:birdingSessionId/bird/:id', birdController.getOneBird);
-router.get('/:id', birdController.getOneBird);
+router.get('/:birdingSessionId/bird/:id', birdController.getOneBird);
+// router.get('/:id', birdController.getOneBird);
 // update a bird
-// router.put('/:birdingSessionId/bird/:id', birdController.updateBird);
-router.put('/:id', birdController.updateBird);
+router.put('/:birdingSessionId/bird/:id', birdController.updateBird);
+// router.put('/:id', birdController.updateBird);
 // delete a bird
-// router.delete('/:birdingSessionId/bird/:id', birdController.deleteBird);
-router.delete('/:id', birdController.deleteBird);
+router.delete('/:birdingSessionId/bird/:id', birdController.deleteBird);
+// router.delete('/:id', birdController.deleteBird);
 
 // ==== EXPORT
 module.exports = router;

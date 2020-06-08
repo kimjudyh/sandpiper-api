@@ -14,11 +14,11 @@ router.get('/:birdingSessionId/bird/:birdId', photoController.getBirdFromBirding
 // create photo associated with a specific bird
 router.post('/:birdingSessionId/bird/:birdId', photoController.createPhoto);
 // get single photo
-router.get('/:id', photoController.getOnePhoto);
+router.get('/:birdingSessionId/:id', photoController.getOnePhoto);
 // update photo
-// router.put('/:id', photoController.updatePhoto);
+router.put('/:birdingSessionId/:id', photoController.updatePhoto);
 // delete photo
-// router.delete('/:id', photoController.deletePhoto);
+router.delete('/:birdingSessionId/:id', photoController.deletePhoto);
 
 // ==== EXPORT
 module.exports = router;

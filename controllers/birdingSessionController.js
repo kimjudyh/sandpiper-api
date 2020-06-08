@@ -91,7 +91,7 @@ const getOneBirdingSession = async (req, res) => {
     if (!foundBirdingSession) {
       return res.status(400).json({
         status: 400,
-        message: `Could not find birding session with id ${req.params.id}`
+        message: `Birding Session not found, or user doesn't have correct permissions`
       })
     }
     // return it as JSON
@@ -131,7 +131,7 @@ const updateBirdingSession = async (req, res) => {
     if (!updatedBirdingSession) {
       return res.status(400).json({
         status: 400,
-        message: `Birding session id ${req.params.id} not found or user doesn't have permission to update`
+        message: `Birding Session not found, or user doesn't have correct permissions`
       })
     }
     // else return as JSON
@@ -169,7 +169,7 @@ const deleteBirdingSession = async (req, res) => {
     if (!deletedBirdingSession) {
       return res.status(400).json({
         status: 400,
-        message: `Birding session id ${req.params.id} not found, or user doesn't have permission to delete`
+        message: `Birding Session not found, or user doesn't have correct permissions`
       })
     }
     // delete birds associated with session from db
@@ -210,6 +210,16 @@ const shareBirdingSession = async (req, res) => {
     })
   } 
   try {
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // req.body.email - multiple email fields?
     // if email field empty
     if (!req.body.email) {
@@ -270,6 +280,16 @@ const unshareBirdingSession = async (req, res) => {
     })
   } 
   try {
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // look up user by email to get user id
     const foundUser = await db.User.findOne({email: req.body.email});
     // if no found user, return error
@@ -280,13 +300,13 @@ const unshareBirdingSession = async (req, res) => {
       })
     }
     // find birding session to update and remove user from users array
-    const foundBirdingSession = await db.BirdingSession.findByIdAndUpdate(
+    const updatedBirdingSession = await db.BirdingSession.findByIdAndUpdate(
       {_id: req.params.id},
       {$pull: {users: foundUser._id}},
       {new: true}
     )
     // if no found birding session, return error
-    if (!foundBirdingSession) {
+    if (!updatedBirdingSession) {
       return res.status(400).json({
         status: 400,
         message: "No birding session found"
@@ -296,7 +316,7 @@ const unshareBirdingSession = async (req, res) => {
     res.status(200).json({
       status: 200,
       message: `Removed user ${req.body.email} from birding session`,
-      foundBirdingSession
+      updatedBirdingSession
     })
     
   } catch (err) {

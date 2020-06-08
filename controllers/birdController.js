@@ -15,6 +15,16 @@ const getBirdingSessionBirds = async (req, res) => {
     })
   } 
   try {
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // find all birds that have birding session id
     const allBirds = await db.Bird.find({birdingSession: req.params.birdingSessionId});
     // find all birds within a given birding session, whose id is provided by the URL through birdingSessionId
@@ -55,6 +65,16 @@ const createBird = async (req, res) => {
     })
   } 
   try {
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // create a bird associated with birding session, whose id is provided by req.params.birdingSessionId
     const newBird = await db.Bird.create({
       ...req.body,
@@ -97,9 +117,8 @@ const createBird = async (req, res) => {
 }
 
 // Get one bird
-// GET '/:id'
+// GET '/:birdingSessionId/bird/:id'
 const getOneBird = async (req, res) => {
-  // TODO: user authorization
   // check that user is logged in
   if (!req.session.currentUser) {
     return res.status(400).json({
@@ -108,6 +127,16 @@ const getOneBird = async (req, res) => {
     })
   } 
   try {
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // find bird by id, provided by URL as req.params.id
     const foundBird = await db.Bird.findById(req.params.id);
     // if foundBird is null, return an error
@@ -133,9 +162,8 @@ const getOneBird = async (req, res) => {
 }
 
 // Update a bird
-// PUT '/:id'
+// PUT '/:birdingSessionId/bird/:id'
 const updateBird = async (req, res) => {
-  // TODO: user authorization
   // check that user is logged in
   if (!req.session.currentUser) {
     return res.status(400).json({
@@ -144,6 +172,16 @@ const updateBird = async (req, res) => {
     })
   } 
   try {
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // find bird by id and update it using req.body
     const updatedBird = await db.Bird.findByIdAndUpdate(
       req.params.id,
@@ -173,7 +211,7 @@ const updateBird = async (req, res) => {
 }
 
 // Delete a bird
-// DELETE '/:id'
+// DELETE '/:birdingSessionId/bird/:id'
 const deleteBird = async (req, res) => {
   // check that user is logged in
   if (!req.session.currentUser) {
@@ -183,7 +221,16 @@ const deleteBird = async (req, res) => {
     })
   } 
   try {
-    // TODO: user authorization
+    // check user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
     // find bird by id and delete from Bird db
     const deletedBird = await db.Bird.findByIdAndDelete(req.params.id);
     // if deletedBird is null, return an error
