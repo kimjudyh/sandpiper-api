@@ -26,7 +26,9 @@ const getBirdingSessionBirds = async (req, res) => {
       })
     }
     // find all birds that have birding session id
-    const allBirds = await db.Bird.find({birdingSession: req.params.birdingSessionId});
+    const allBirds = await db.Bird.find({birdingSession: req.params.birdingSessionId})
+    .populate('behavior', 'name');
+    console.log('all birds', allBirds)
     // find all birds within a given birding session, whose id is provided by the URL through birdingSessionId
     // const allBirds = await db.BirdingSession.findById(req.params.birdingSessionId)
       // .populate('birds');

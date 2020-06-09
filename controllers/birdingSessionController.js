@@ -83,9 +83,11 @@ const getOneBirdingSession = async (req, res) => {
     })
   } 
   try {
+    console.log('in get one birding session');
     // find by birding session id AND user id
     const foundBirdingSession = await db.BirdingSession.findOne(
-      {_id: req.params.id, users: req.session.currentUser});
+      {_id: req.params.id, users: req.session.currentUser})
+      .populate('users', 'name');
     console.log('birding session', foundBirdingSession)
     // if doesn't exist, return error
     if (!foundBirdingSession) {
