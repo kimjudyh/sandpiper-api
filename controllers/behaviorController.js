@@ -35,11 +35,15 @@ const createBehavior = async (req, res) => {
     // create a behavior in database
     const newBehavior = await db.Behavior.create(req.body);
     if (!newBehavior) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         message: "Something went wrong creating behavior"
       })
     }
+    res.status(200).json({
+      status: 200,
+      newBehavior
+    })
 
   } catch (err) {
     return res.status(500).json({
