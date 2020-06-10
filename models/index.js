@@ -8,7 +8,9 @@ const configOptions = {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  poolSize: 10, // Maintain up to 10 socket connections
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
 };
 
 // ======== CONNECT
