@@ -16,7 +16,8 @@ const getAllBirdingSessions = async (req, res) => {
   } 
   try {
     // get array of all sessions from db that user is part of
-    const allBirdingSessions = await db.BirdingSession.find({users: req.session.currentUser});
+    const allBirdingSessions = await db.BirdingSession.find({users: req.session.currentUser})
+    .populate('users', 'name');
     // return all sessions as JSON
     res.status(200).json({
       status: 200,
@@ -212,10 +213,12 @@ const shareBirdingSession = async (req, res) => {
     })
   } 
   try {
+    console.log('share', req.body);
     // check user has permission to access this birding session
     const foundBirdingSession = await db.BirdingSession.findOne(
-      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+      {users: req.session.currentUser, _id: req.params.id}
     );
+    console.log('found share', foundBirdingSession);
     if (!foundBirdingSession) {
       return res.status(400).json({
         status: 400,
