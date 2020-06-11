@@ -177,6 +177,9 @@ const deleteBirdingSession = async (req, res) => {
     }
     // delete birds associated with session from db
     const deletedBirds = await db.Bird.deleteMany({birdingSession: req.params.id})
+
+    // delete photos associated with session
+    const deletedPhotos = await db.Photo.deleteMany({birdingSession: req.params.id})
     // remove?
     // delete birding session id from User's birding sessions array
     // const foundUser = await db.User.findByIdAndUpdate(

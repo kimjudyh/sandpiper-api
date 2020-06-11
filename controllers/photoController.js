@@ -52,6 +52,46 @@ const getAllPhotos = async (req, res) => {
   }
 }
 
+// Get photos from a birding session
+// GET '/:birdingSessionId'
+const getBirdingSessionPhotos = async (req, res) => {
+  // check that user is logged in
+  if (!req.session.currentUser) {
+    return res.status(400).json({
+      status: 400,
+      message: "User not logged in"
+    })
+  } 
+  try {
+    // check that user has permission to access this birding session
+    const foundBirdingSession = await db.BirdingSession.findOne(
+      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+    );
+    if (!foundBirdingSession) {
+      return res.status(400).json({
+        status: 400,
+        message: `Birding Session not found, or user doesn't have correct permissions`
+      })
+    }
+    // find photos in db that have birding session id
+    const foundPhotos = await db.Photo.find(
+      {birdingSession: req.params.birdingSessionId}
+    )
+    res.status(200).json({
+      status: 200,
+      foundPhotos
+    })
+
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      err,
+      message: "Something went wrong getting photos from birding session"
+    })
+  }
+
+}
+
 // Get photos of one bird from a birding session
 // GET '/:birdingSessionId/bird/:birdId
 const getBirdFromBirdingSessionPhotos = async (req, res) => {
@@ -127,14 +167,14 @@ const createPhoto = async (req, res) => {
       user: req.session.currentUser
     }
     const newPhoto = await db.Photo.create(photoData);
-    const foundBird = await db.Bird.findById(req.params.birdId);
-    foundBird.photos.push(newPhoto._id);
-    const savedBird = foundBird.save();
+    // const foundBird = await db.Bird.findById(req.params.birdId);
+    // foundBird.photos.push(newPhoto._id);
+    // const savedBird = foundBird.save();
 
     res.status(200).json({
       status: 200,
       newPhoto,
-      savedBird
+      // savedBird
     })
 
   } catch (err) {
@@ -247,6 +287,14 @@ const deletePhoto = async (req, res) => {
     }
     // find photo in db by id and delete
     const deletedPhoto = await db.Photo.findByIdAndDelete(req.params.id);
+
+    // delete from cloudinary
+    cloudinary.v2.uploader.destroy(deletedPhoto.cloudinaryPublicId, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
     // return data as json
     res.status(200).json({
       status: 200,
@@ -266,6 +314,7 @@ const deletePhoto = async (req, res) => {
 // ==== EXPORT
 module.exports = {
   getAllPhotos,
+  getBirdingSessionPhotos,
   getBirdFromBirdingSessionPhotos,
   createPhoto,
   getOnePhoto,

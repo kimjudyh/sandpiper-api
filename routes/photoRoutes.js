@@ -9,6 +9,8 @@ const photoController = require('../controllers/photoController');
 // path = /api/v1/photo
 // index route - get all photos by user (or get all photos from all sessions, including photos from other users?)
 router.get('/', photoController.getAllPhotos);
+// get all photos in a birding session
+router.get('/:birdingSessionId', photoController.getBirdingSessionPhotos);
 // get all photos of a bird in a birding session
 router.get('/:birdingSessionId/bird/:birdId', photoController.getBirdFromBirdingSessionPhotos);
 // create photo associated with a specific bird
