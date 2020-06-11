@@ -139,6 +139,8 @@ const getOneBird = async (req, res) => {
         message: `Birding Session not found, or user doesn't have correct permissions`
       })
     }
+    console.log('birding session', req.params.birdingSessionId)
+    console.log('bird', req.params.id)
     // find bird by id, provided by URL as req.params.id
     const foundBird = await db.Bird.findById(req.params.id)
       .populate('behavior', 'name');

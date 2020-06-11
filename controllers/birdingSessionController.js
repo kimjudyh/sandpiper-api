@@ -240,7 +240,8 @@ const shareBirdingSession = async (req, res) => {
     const foundUser = await db.User.findOne({ email: req.body.email });
     // if no found user, user is not registered
     if (!foundUser) {
-      return res.json({
+      return res.status(400).json({
+        status: 400,
         message: "User not registered"
       })
     }
