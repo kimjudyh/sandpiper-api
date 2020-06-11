@@ -36,6 +36,8 @@ const getAllPhotos = async (req, res) => {
     const foundPhotos = await db.Photo.find(
       {birdingSession: {$in: foundBirdingSessions}}
     )
+    .populate('birdingSession', 'location')
+    .populate('bird')
     // return found photos as JSON
     res.status(200).json({
       status: 200,
@@ -77,6 +79,8 @@ const getBirdingSessionPhotos = async (req, res) => {
     const foundPhotos = await db.Photo.find(
       {birdingSession: req.params.birdingSessionId}
     )
+    .populate('birdingSession', 'location')
+    .populate('bird')
     res.status(200).json({
       status: 200,
       foundPhotos
@@ -117,6 +121,8 @@ const getBirdFromBirdingSessionPhotos = async (req, res) => {
     const foundPhotos = await db.Photo.find(
       {bird: req.params.birdId, birdingSession: req.params.birdingSessionId}
     )
+    .populate('birdingSession', 'location')
+    .populate('bird')
     // look in bird db by birding session id, bird id
     // const foundBird = await db.Bird.findOne({
     //   birdingSession: req.params.birdingSessionId,
