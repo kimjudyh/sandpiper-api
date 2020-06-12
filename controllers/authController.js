@@ -126,7 +126,6 @@ const verify = async (req, res) => {
 const logout = async (req, res) => {
   try {
     console.log('in logout')
-    console.log('req.session', req.session)
     // check if a user is logged in
     if (!req.session.currentUser) {
       return res.status(400).json({

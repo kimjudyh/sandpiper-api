@@ -7,6 +7,7 @@ const behaviorController = require('../controllers/behaviorController');
 // path = /api/v1/behavior
 // index route - get all behaviors
 router.get('/', behaviorController.getAllBehaviors);
+
 // create new behavior
 router.post('/', behaviorController.createBehavior);
 
