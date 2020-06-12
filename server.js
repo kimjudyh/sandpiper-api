@@ -19,7 +19,7 @@ const routes = require('./routes');
 // ====== MIDDLEWARE
 // CORS
 const corsOptions = {
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000', 'https://sandpiper-react.herokuapp.com'],
   credentials: true, // allows session cookie to be sent back and forth from server to client
   optionsSuccessStatus: 200
 }
