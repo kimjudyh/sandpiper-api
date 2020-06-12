@@ -1,6 +1,9 @@
 {
   "behaviors": [
     {
+      "name": "Being a Bird"
+    },
+    {
       "name": "Eating"
     },
     {
