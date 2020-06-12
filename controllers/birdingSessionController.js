@@ -279,7 +279,7 @@ const unshareBirdingSession = async (req, res) => {
   try {
     // check user has permission to access this birding session
     const foundBirdingSession = await db.BirdingSession.findOne(
-      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+      {users: req.session.currentUser, _id: req.params.id}
     );
     if (!foundBirdingSession) {
       return res.status(400).json({
@@ -288,7 +288,7 @@ const unshareBirdingSession = async (req, res) => {
       })
     }
     // look up user by email to get user id
-    const foundUser = await db.User.findOne({email: req.body.email});
+    const foundUser = await db.User.findById(req.body._id);
     // if no found user, return error
     if (!foundUser) {
       return res.status(400).json({
@@ -312,7 +312,7 @@ const unshareBirdingSession = async (req, res) => {
     // return data as JSON
     res.status(200).json({
       status: 200,
-      message: `Removed user ${req.body.email} from birding session`,
+      message: `Removed user from birding session`,
       updatedBirdingSession
     })
     
