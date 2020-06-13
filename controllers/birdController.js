@@ -28,10 +28,7 @@ const getBirdingSessionBirds = async (req, res) => {
     // find all birds that have birding session id
     const allBirds = await db.Bird.find({birdingSession: req.params.birdingSessionId})
     .populate('behavior', 'name');
-    console.log('all birds', allBirds)
-    // find all birds within a given birding session, whose id is provided by the URL through birdingSessionId
-    // const allBirds = await db.BirdingSession.findById(req.params.birdingSessionId)
-      // .populate('birds');
+
     // if allBirds is null, return an error 
     if (!allBirds) {
       return res.status(400).json({
@@ -58,7 +55,6 @@ const getBirdingSessionBirds = async (req, res) => {
 // Create new bird in specified birding session
 // POST '/birdingSession/:birdingSessionId'
 const createBird = async (req, res) => {
-  // TODO: user authorization
   // check that user is logged in
   if (!req.session.currentUser) {
     return res.status(400).json({
@@ -89,19 +85,6 @@ const createBird = async (req, res) => {
         message: "Something went wrong creating a bird"
       })
     }
-    // add bird id to BirdSession birds array
-    // remove?
-    // const foundBirdingSession = await db.BirdingSession.findById(req.params.birdingSessionId);
-    // if birding session doesn't exist, return an error
-    // if (!foundBirdingSession) {
-    //   return res.status(400).json({
-    //     status: 400,
-    //     message: "Birding Session not found"
-    //   })
-    // }
-    // else push bird into array
-    // foundBirdingSession.birds.push(newBird._id);
-    // const savedBirdingSession = await foundBirdingSession.save();
 
     // return data as JSON
     res.status(200).json({
@@ -139,8 +122,6 @@ const getOneBird = async (req, res) => {
         message: `Birding Session not found, or user doesn't have correct permissions`
       })
     }
-    console.log('birding session', req.params.birdingSessionId)
-    console.log('bird', req.params.id)
     // find bird by id, provided by URL as req.params.id
     const foundBird = await db.Bird.findById(req.params.id)
       .populate('behavior', 'name');
@@ -245,26 +226,6 @@ const deleteBird = async (req, res) => {
         message: "Something went wrong deleting a bird"
       })
     }
-    // delete bird from associated birding session
-    // remove?
-    // const foundBirdingSession = await db.BirdingSession.findById(req.params.birdingSessionId);
-    // if foundBirdingSession is null, return an error
-    // if (!foundBirdingSession) {
-    //   return res.status(400).json({
-    //     status: 400,
-    //     message: "Something went wrong finding birding session"
-    //   })
-    // }
-    // remove bird from birds array in birding session
-    // foundBirdingSession.birds.pull({ _id: req.params.id });
-    // const savedBirdingSession = await foundBirdingSession.save();
-    // if savedBirdingSession is null, return an error
-    // if (!savedBirdingSession) {
-    //   return res.status(400).json({
-    //     status: 400,
-    //     message: "Somthing went wrong saving birding session"
-    //   })
-    // }
     // else, return data as JSON
     res.status(200).json({
       status: 200,

@@ -22,9 +22,7 @@ const getAllPhotos = async (req, res) => {
     })
   } 
   try {
-    console.log(req.session.currentUser);
     // find user in db
-    // const foundUser = await db.User.findById(req.session.currentUser);
     // find birding sessions that contain user id
     const foundBirdingSessions = await db.BirdingSession.find(
       {users: req.session.currentUser}
@@ -83,6 +81,7 @@ const getBirdingSessionPhotos = async (req, res) => {
     .populate('bird')
     res.status(200).json({
       status: 200,
+      message: "Got photos from birding session",
       foundPhotos
     })
 
@@ -123,17 +122,11 @@ const getBirdFromBirdingSessionPhotos = async (req, res) => {
     )
     .populate('birdingSession', 'location')
     .populate('bird')
-    // look in bird db by birding session id, bird id
-    // const foundBird = await db.Bird.findOne({
-    //   birdingSession: req.params.birdingSessionId,
-    //   _id: req.params.birdId
-    // })
-    //   .populate('photos')
     // send data as JSON
     res.status(200).json({
       status: 200,
+      message: "Got photos of bird from birding session",
       foundPhotos
-      // photos: foundBird.photos
     })
 
   } catch (err) {
@@ -173,14 +166,11 @@ const createPhoto = async (req, res) => {
       user: req.session.currentUser
     }
     const newPhoto = await db.Photo.create(photoData);
-    // const foundBird = await db.Bird.findById(req.params.birdId);
-    // foundBird.photos.push(newPhoto._id);
-    // const savedBird = foundBird.save();
 
     res.status(200).json({
       status: 200,
-      newPhoto,
-      // savedBird
+      message: "Created a photo",
+      newPhoto
     })
 
   } catch (err) {
@@ -216,6 +206,7 @@ const getOnePhoto = async (req, res) => {
     const foundPhoto = await db.Photo.findById(req.params.id);
     res.status(200).json({
       status: 200,
+      message: "Got photo",
       foundPhoto
     })
 
@@ -226,7 +217,6 @@ const getOnePhoto = async (req, res) => {
       message: "Something went wrong getting a photo"
     })
   }
-  // get photo by id
 }
 
 // Update a photo
@@ -259,6 +249,7 @@ const updatePhoto = async (req, res) => {
     // return data as JSON
     res.status(200).json({
       status: 200,
+      message: "Updated photo",
       updatedPhoto
     })
 
@@ -297,7 +288,7 @@ const deletePhoto = async (req, res) => {
     // delete from cloudinary
     cloudinary.v2.uploader.destroy(deletedPhoto.cloudinaryPublicId, (err, result) => {
       if (err) {
-        console.log(err);
+        console.log('error deleting from cloudinary', err);
       }
     });
 

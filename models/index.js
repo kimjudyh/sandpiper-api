@@ -16,7 +16,7 @@ const configOptions = {
 // ======== CONNECT
 mongoose.connect(connectionString, configOptions)
   .then(() => {
-    console.log('Connected to mongoDB at final-project db');
+    console.log('Connected to mongoDB');
   })
   .catch((err) => {
     console.log(err);

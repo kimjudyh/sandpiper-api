@@ -24,7 +24,13 @@ const register = async (req, res) => {
     }
     // TODO: check validity of data being sent
     // password is unique
-    // TODO: check that the 2 passwords match
+    // check that the 2 passwords match
+    if (req.body.password !== req.body.password2) {
+      return res.status(400).json({
+        status: 400,
+        message: "Passwords don't match"
+      })
+    }
 
     // create a new user
     // generate salt (adds complication to password hash)
@@ -120,7 +126,6 @@ const verify = async (req, res) => {
 const logout = async (req, res) => {
   try {
     console.log('in logout')
-    console.log('req.session', req.session)
     // check if a user is logged in
     if (!req.session.currentUser) {
       return res.status(400).json({

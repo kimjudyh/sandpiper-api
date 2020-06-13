@@ -53,11 +53,7 @@ const createBirdingSession = async (req, res) => {
     console.log(newBirdingSessionData);
     // save to db
     const newBirdingSession = await db.BirdingSession.create(newBirdingSessionData);
-    // remove?
-    // push birding session id to User's birding session array
-    // const foundUser = await db.User.findById(req.session.currentUser);
-    // foundUser.birdingSessions.push(newBirdingSession._id);
-    // const savedUser = await foundUser.save();
+
     // return JSON confirmation message
     res.status(200).json({
       status: 200,
@@ -89,7 +85,6 @@ const getOneBirdingSession = async (req, res) => {
     const foundBirdingSession = await db.BirdingSession.findOne(
       {_id: req.params.id, users: req.session.currentUser})
       .populate('users', 'name');
-    console.log('birding session', foundBirdingSession)
     // if doesn't exist, return error
     if (!foundBirdingSession) {
       return res.status(400).json({
@@ -140,14 +135,15 @@ const updateBirdingSession = async (req, res) => {
     // else return as JSON
     res.status(200).json({
       status: 200,
-      message: "on update page",
+      message: "Updated birding session",
       updatedBirdingSession
     })
 
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      message: err
+      message: "Something went wrong",
+      err
     })
   }
 }
@@ -180,13 +176,6 @@ const deleteBirdingSession = async (req, res) => {
 
     // delete photos associated with session
     const deletedPhotos = await db.Photo.deleteMany({birdingSession: req.params.id})
-    // remove?
-    // delete birding session id from User's birding sessions array
-    // const foundUser = await db.User.findByIdAndUpdate(
-      // {_id: req.session.currentUser}, 
-      // {$pull: {birdingSessions: req.params.id}},
-      // {new: true}
-    // )
     // return confirmation of deletion
     res.status(200).json({
       status: 200,
@@ -200,7 +189,8 @@ const deleteBirdingSession = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      message: err
+      message: "Something went wrong",
+      err
     })
   }
 }
@@ -216,12 +206,10 @@ const shareBirdingSession = async (req, res) => {
     })
   } 
   try {
-    console.log('share', req.body);
     // check user has permission to access this birding session
     const foundBirdingSession = await db.BirdingSession.findOne(
       {users: req.session.currentUser, _id: req.params.id}
     );
-    console.log('found share', foundBirdingSession);
     if (!foundBirdingSession) {
       return res.status(400).json({
         status: 400,
@@ -291,7 +279,7 @@ const unshareBirdingSession = async (req, res) => {
   try {
     // check user has permission to access this birding session
     const foundBirdingSession = await db.BirdingSession.findOne(
-      {users: req.session.currentUser, _id: req.params.birdingSessionId}
+      {users: req.session.currentUser, _id: req.params.id}
     );
     if (!foundBirdingSession) {
       return res.status(400).json({
@@ -300,7 +288,7 @@ const unshareBirdingSession = async (req, res) => {
       })
     }
     // look up user by email to get user id
-    const foundUser = await db.User.findOne({email: req.body.email});
+    const foundUser = await db.User.findById(req.body._id);
     // if no found user, return error
     if (!foundUser) {
       return res.status(400).json({
@@ -324,7 +312,7 @@ const unshareBirdingSession = async (req, res) => {
     // return data as JSON
     res.status(200).json({
       status: 200,
-      message: `Removed user ${req.body.email} from birding session`,
+      message: `Removed user from birding session`,
       updatedBirdingSession
     })
     
