@@ -20,8 +20,8 @@ Front-end: React, Bootstrap, Flexbox, Font Awesome, Javascript, CSS, HTML
 Back-end: Express, Node.js, MongoDB, Mongoose
 Dependencies: Axios, Bing Maps, Cloudinary, React Router
 
-### Frontend API
-* Github: https://git.generalassemb.ly/judykim-ga/final-project-client
+### Frontend 
+* Github: https://github.com/kimjudyh/sandpiper-client
 * Deployed Site: https://sandpiper-react.herokuapp.com/
 
 ## Screenshots
