@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // ====== CONFIG
-const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/final-project';
+const connectionString = process.env.ATLAS_MONGODB_URI || 'mongodb://localhost:27017/final-project';
 const configOptions = {
   useNewUrlParser: true,
   useCreateIndex: true,

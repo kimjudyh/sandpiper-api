@@ -28,7 +28,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // set up sessions with MongoStore
-const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/final-project';
+const connectionString = process.env.ATLAS_MONGODB_URI || 'mongodb://localhost:27017/final-project';
 app.use(session({
   secret: (process.env.SESSION_SECRET || 'finalprojectkey'),
   resave: false, // only save session if we set or mutate property on session
