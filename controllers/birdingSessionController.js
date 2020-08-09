@@ -7,15 +7,15 @@ const db = require('../models');
 // Get all birding sessions
 // GET '/'
 const getAllBirdingSessions = async (req, res) => {
-  console.log(req.session)
-  // check that user is logged in
-  if (!req.session.currentUser) {
-    return res.status(400).json({
-      status: 400,
-      message: "User not logged in"
-    })
-  } 
   try {
+    console.log(req.session)
+    // check that user is logged in
+    if (!req.session.currentUser) {
+      return res.status(400).json({
+        status: 400,
+        message: "User not logged in"
+      })
+    } 
     // get array of all sessions from db that user is part of
     const allBirdingSessions = await db.BirdingSession.find({users: req.session.currentUser})
     .populate('users', 'name');
