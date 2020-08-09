@@ -39,7 +39,8 @@ app.use(session({
   ),
   cookie: {
     maxAge: 1000 * 3600 * 24 * 4, // 4 day long session
-  }
+  },
+  sameSite: "lax"
 }));
 
 // ====== ROUTES
