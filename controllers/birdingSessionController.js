@@ -8,7 +8,6 @@ const db = require('../models');
 // GET '/'
 const getAllBirdingSessions = async (req, res) => {
   try {
-    console.log(req.session)
     // check that user is logged in
     if (!req.session.currentUser) {
       return res.status(400).json({

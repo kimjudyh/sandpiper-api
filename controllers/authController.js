@@ -91,8 +91,6 @@ const login = async (req, res) => {
     // if passwords match, create new session
     // attach currentUser property to cookie
     req.session.currentUser = foundUser._id;
-    console.log(foundUser._id)
-    console.log('session', req.session)
 
     return res.status(200).json({
       status: 200,
