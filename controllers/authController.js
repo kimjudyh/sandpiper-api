@@ -92,6 +92,7 @@ const login = async (req, res) => {
     // attach currentUser property to cookie
     req.session.currentUser = foundUser._id;
     console.log(foundUser._id)
+    console.log('session', req.session)
 
     return res.status(200).json({
       status: 200,
